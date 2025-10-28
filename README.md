@@ -1,5 +1,5 @@
 ### Bomb Maze
-Bomb Maze este un joc in care jucatorul trebuie sa parcurga un labirint distrugand inamicii si block-urile false cu ajutorul bombelor sale. In fiecare labirint se pot gasi puteri ascunse care sa-i imbunatateasca bombele sau atributele jucatorului. Pentru a trece labirintul, acesta trebuie sa gaseasca iesirea si sa distruga toti inamicii. Jocul este inspirat din seria de jocuri Bomberman.
+Bomb Maze este un joc de tip maze in care jucatorul trebuie sa parcurga un labirint distrugand inamicii si block-urile false cu ajutorul bombelor sale. In fiecare labirint se pot gasi puteri ascunse care sa-i imbunatateasca bombele sau atributele jucatorului. Pentru a trece labirintul, acesta trebuie sa gaseasca iesirea si sa distruga toti inamicii. Jocul este inspirat din seria de jocuri Bomberman.
 
 ### Folosiți template-ul corespunzător grupei voastre!
 
