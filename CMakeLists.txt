@@ -50,6 +50,14 @@ include(cmake/CopyHelper.cmake)
 # NOTE: update executable name in .github/workflows/cmake.yml:25 when changing name here
 add_executable(${MAIN_EXECUTABLE_NAME}
     main.cpp
+        Maze.h
+        Player.h
+        Player.cpp
+        Bomb.h
+        Bomb.cpp
+        Enemies.h
+        Enemies.cpp
+        Maze.cpp
 )
 
 # NOTE: Add all defined targets (e.g. executables, libraries, etc. )
