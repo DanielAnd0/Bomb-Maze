@@ -6,7 +6,6 @@
 #include "Maze.h"
 #include <fstream>
 
-ifstream
 using namespace std;
 
 void Maze::show_maze() const{
