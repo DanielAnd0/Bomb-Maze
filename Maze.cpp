@@ -35,6 +35,7 @@ Maze::~Maze() {
     for(auto i : enemies) {
         delete i;
     }
+    enemies.clear();
 }
 
 void Maze::create_maze() {
@@ -168,6 +169,7 @@ void Maze::destroy_enemy(int x, int y) {
         maze[x][y] = ' ';
         for(int i = 0; i < static_cast<int>(enemies.size()); i++) {
             if (enemies[i]->get_position_x() == x && enemies[i]->get_position_y() == y) {
+                enemies[i]->kill();
                 enemies.erase(enemies.begin() + i);
                 cout<<"Delete enemy from position ("<<x<<", "<<y<<")"<<endl;
             }
@@ -198,7 +200,7 @@ ostream& operator<<(ostream& os, const Maze& maze) {
     }
     os << *maze.player;
     if (maze.enemies.size() != 0) {
-        for (Enemies* i : maze.enemies) {
+        for (auto i : maze.enemies) {
             os << *i;
         }
     }
