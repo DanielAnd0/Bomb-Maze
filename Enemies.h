@@ -15,10 +15,12 @@ class Enemies {
 public:
     Enemies();
     Enemies(int position_x, int position_y);
-    int get_position_x() const;
-    int get_position_y() const;
+    [[nodiscard]]int get_position_x() const;
+    [[nodiscard]]int get_position_y() const;
     void set_position(int x, int y);
-    bool get_life_status() const;
+    [[nodiscard]]bool get_life_status() const;
     void kill();
+    friend ostream& operator<<(ostream& os, const Enemies& enemy);
+
 };
 #endif //OOP_ENEMIES_H

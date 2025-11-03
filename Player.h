@@ -14,14 +14,17 @@ class Player{
 public:
      Player();
      Player(int position_x, int position_y);
-     int get_lifes() const;
-     int get_position_x() const;
-     int get_position_y() const;
+     [[nodiscard]]int get_lifes() const;
+     [[nodiscard]]int get_position_x() const;
+     [[nodiscard]]int get_position_y() const;
+     [[nodiscard]]bool get_life_status() const;
+     [[nodiscard]]int get_speed() const;
      void set_position(int x, int y);
      void Move(int direction);
      void life_update();
-     Bomb Drop_Bomb() const;
+     [[nodiscard]]Bomb Drop_Bomb() const;
      void die();
+     friend ostream& operator<<(ostream& os, const Player& player);
 };
 
 #endif //OOP_PLAYER_H

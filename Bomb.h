@@ -15,9 +15,10 @@ class Bomb {
 public:
     Bomb();
     Bomb(int radius, int position_x, int position_y);
-    int get_radius() const;
-    int get_position_x() const;
-    int get_position_y() const;
+    [[nodiscard]]int get_radius() const;
+    [[nodiscard]]int get_position_x() const;
+    [[nodiscard]]int get_position_y() const;
+    friend ostream& operator<<(ostream& os, const Bomb& bomb);
 };
 
 #endif //OOP_BOMB_H

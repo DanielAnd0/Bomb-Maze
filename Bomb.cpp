@@ -23,4 +23,8 @@ int Bomb::get_position_x() const{
 int Bomb::get_position_y() const {
     return position_y;
 }
+ostream& operator<<(ostream& os, const Bomb& bomb) {
+    os << "Bomba de raza "<<bomb.radius<<" la pozitia ("<<bomb.position_x<<", "<<bomb.position_y<<")\n";
+    return os;
+}
 

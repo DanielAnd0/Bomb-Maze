@@ -25,16 +25,30 @@ class Maze{
         int x;
         int y;
     } exit;
-    void show_maze() const;
+    [[nodiscard]]int is_in_maze(int x, int y)const;
+    void destroy_enemy(int x, int y);
 public:
     Maze();
     Maze(int rows, int cols, int x, int y);
+    Maze(const Maze& other);
     ~Maze();
-    void destroy_block(int x, int y);
-    void place_player(int x, int y);
-    void place_enemies();
-    void destroy_enemies();
-    void display();
+    void create_maze();
+    void replace_player(int x, int y);
+    int Move_Player(int direction); // 1 - a reusit mutarea
+    void Player_Bomb();
+    void place_enemy(int x, int y);
+    Maze& operator=(const Maze& other);
+    friend ostream& operator<<(ostream& os, const Maze& maze);
+    int checkGame() const;
 };
+
+/*
+ Legend:
+ * = block
+ o = false block
+ P = player
+ E = enemy
+
+*/
 
 #endif //OOP_MAZE_H

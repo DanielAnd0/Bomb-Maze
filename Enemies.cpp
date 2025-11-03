@@ -31,6 +31,11 @@ void Enemies::kill() {
     position_x = -1;
     position_y = -1;
 }
+ostream& operator<<(ostream& os, const Enemies& enemy) {
+    os << "Inamic la pozitia ("<<enemy.position_x<<", "<<enemy.position_y<<")\n";
+    return os;
+}
+
 
 
 
