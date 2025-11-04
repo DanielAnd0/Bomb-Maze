@@ -20,7 +20,7 @@ class Maze{
     int rows, cols;
     vector<string> maze;
     Player *player;
-    vector<Enemies*> enemies;
+    vector<Enemies> enemies;
     struct Point{
         int x;
         int y;

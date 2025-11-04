@@ -35,9 +35,6 @@ Maze::Maze(const Maze& other) : exit{other.exit.x,other.exit.y} {
 }
 Maze::~Maze() {
     delete player;
-    for(const auto i : enemies) {
-        delete i;
-    }
     enemies.clear();
 }
 
@@ -155,12 +152,13 @@ void Maze::Player_Bomb() {
         }
     }
 }
-void Maze::place_enemy(int x, int y){
+void Maze::place_enemy(const int x, const int y){
     if (x < 0 || x >= rows || y < 0 || y >= cols)
         cout<<"Not in maze"<<endl;
     else {
         if (maze[x][y] == ' ') {
-            enemies.push_back(new Enemies(x,y));
+            Enemies enemy(x,y);
+            enemies.push_back(enemy);
             maze[x][y] = 'E';
         }
         else cout<<"Enemy can not be placed";
@@ -170,8 +168,8 @@ void Maze::destroy_enemy(int x, int y) {
     if (maze[x][y] == 'E') {
         maze[x][y] = ' ';
         for(int i = 0; i < static_cast<int>(enemies.size()); i++) {
-            if (enemies[i]->get_position_x() == x && enemies[i]->get_position_y() == y) {
-                enemies[i]->kill();
+            if (enemies[i].get_position_x() == x && enemies[i].get_position_y() == y) {
+                enemies[i].kill();
                 enemies.erase(enemies.begin() + i);
                 cout<<"Delete enemy from position ("<<x<<", "<<y<<")"<<endl;
             }
@@ -202,8 +200,8 @@ ostream& operator<<(ostream& os, const Maze& maze) {
     }
     os << *maze.player;
     if (maze.enemies.size() != 0) {
-        for (auto i : maze.enemies) {
-            os << *i;
+        for (const auto i : maze.enemies) {
+            os << i;
         }
     }
     return os;
