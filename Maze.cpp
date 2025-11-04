@@ -7,7 +7,7 @@
 #include <fstream>
 using namespace std;
 
-int Maze::is_in_maze(int x, int y) const {
+int Maze::is_in_maze(const int x, const int y) const {
     if (x < 0 || x >= rows || y < 0 || y >= cols) return 0;
     return 1;
 }
@@ -16,7 +16,7 @@ Maze::Maze() : exit{9,9} {
     cols = 10;
     player = new Player;
 }
-Maze::Maze(int rows, int cols, int x, int y): exit{x,y}{
+Maze::Maze(const int rows, const int cols, const int x, const int y): exit{x,y}{
     this->rows = rows;
     this->cols = cols;
     player = new Player;
@@ -26,13 +26,16 @@ Maze::Maze(int rows, int cols, int x, int y): exit{x,y}{
 Maze::Maze(const Maze& other) : exit{other.exit.x,other.exit.y} {
     rows = other.rows;
     cols = other.cols;
-    player = other.player;
+    if (other.player)
+        player = new Player(*other.player);
+    else
+        player = nullptr;
     for (auto i : other.enemies)
         enemies.push_back(i);
 }
 Maze::~Maze() {
     delete player;
-    for(auto i : enemies) {
+    for(const auto i : enemies) {
         delete i;
     }
     enemies.clear();
@@ -57,7 +60,7 @@ void Maze::create_maze() {
     fin.close();
 }
 
-void Maze::replace_player(int x, int y) {
+void Maze::replace_player(const int x, const int y) {
     if (is_in_maze(x, y) == 0)
         cout<<"Not in maze"<<endl;
     else{
@@ -71,10 +74,10 @@ void Maze::replace_player(int x, int y) {
         }
     }
 }
-int Maze::Move_Player(int direction) {
+int Maze::Move_Player(const int direction) {
     for(int i = 0 ; i < player->get_speed(); i++) {
-        int pos_x = player->get_position_x();
-        int pos_y = player->get_position_y();
+        const int pos_x = player->get_position_x();
+        const int pos_y = player->get_position_y();
         switch (direction) { //verificam daca se poate mutarea
             case 1:
                 if (is_in_maze(pos_x-1, pos_y) == 0) return 0;
@@ -157,8 +160,7 @@ void Maze::place_enemy(int x, int y){
         cout<<"Not in maze"<<endl;
     else {
         if (maze[x][y] == ' ') {
-            auto enemy = new Enemies(x,y);
-            enemies.push_back(enemy);
+            enemies.push_back(new Enemies(x,y));
             maze[x][y] = 'E';
         }
         else cout<<"Enemy can not be placed";
