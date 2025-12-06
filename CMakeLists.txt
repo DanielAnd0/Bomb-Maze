@@ -69,12 +69,9 @@ add_executable(${MAIN_EXECUTABLE_NAME}
         tiles.h
         wall.cpp
         wall.h
-        wall.h
         falseWall.cpp
         falseWall.h
-        falseWall.h
         path.cpp
-        path.h
         path.h
 )
 
@@ -93,7 +90,7 @@ set_compiler_flags(RUN_SANITIZERS TRUE TARGET_NAMES ${MAIN_EXECUTABLE_NAME})
 # target_link_directories(${MAIN_EXECUTABLE_NAME} PRIVATE ${<SomeLib>_BINARY_DIR}/lib)
 # target_link_libraries(${MAIN_EXECUTABLE_NAME} <SomeLib>)
 
-target_compile_features(${MAIN_EXECUTABLE_NAME} PRIVATE cxx_std_17)
+#target_compile_features(${MAIN_EXECUTABLE_NAME} PRIVATE cxx_std_17)
 target_link_libraries(${MAIN_EXECUTABLE_NAME} PRIVATE SFML::Graphics)
 
 ###############################################################################
