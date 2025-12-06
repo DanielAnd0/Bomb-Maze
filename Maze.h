@@ -8,7 +8,7 @@
 
 #include<vector>
 #include "tiles.h"
-#include "Player.h"
+
 class Maze{
     const unsigned int width, height;
     std::vector<tiles*>Tiles;
