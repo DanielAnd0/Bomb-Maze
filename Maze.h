@@ -6,49 +6,25 @@
 #define OOP_MAZE_H
 
 
-#include<iostream>
-#include<string>
 #include<vector>
-
-#include "Enemies.h"
+#include "tiles.h"
 #include "Player.h"
-
-
-using namespace std;
-
 class Maze{
-    int rows, cols;
-    vector<string> maze;
-    Player *player;
-    vector<Enemies> enemies;
-    struct Point{
-        int x;
-        int y;
-    } exit;
-    [[nodiscard]]int is_in_maze(int x, int y)const;
-    void destroy_enemy(int x, int y);
+    const unsigned int width, height;
+    std::vector<tiles*>Tiles;
+    sf::Vector2u exit;
+    [[nodiscard]]bool is_in_maze(int x, int y)const;
 public:
-    Maze();
-    Maze(int rows, int cols, int x, int y);
-    Maze(const Maze& other);
+    Maze(unsigned int width, unsigned int height, sf::Vector2u exit);
+    void loadtiles(const int* tiles);
+    void drawMaze(sf::RenderWindow& window) const;
+    bool can_player_move(Player& player) const;
+    //Maze(const Maze& other);
     ~Maze();
-    void create_maze();
-    void replace_player(int x, int y);
-    int Move_Player(int direction); // 1 - a reusit mutarea
-    void Player_Bomb();
-    void place_enemy(int x, int y);
-    Maze& operator=(const Maze& other);
-    friend ostream& operator<<(ostream& os, const Maze& maze);
-    int checkGame() const;
+ //   void create_maze();
+   // Maze& operator=(const Maze& other);
+ //   friend ostream& operator<<(ostream& os, const Maze& maze);
+ //   int checkGame() const;
 };
-
-/*
- Legend:
- * = block
- o = false block
- P = player
- E = enemy
-
-*/
 
 #endif //OOP_MAZE_H

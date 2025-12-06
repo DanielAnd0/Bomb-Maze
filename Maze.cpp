@@ -4,25 +4,62 @@
 
 #include<iostream>
 #include "Maze.h"
-#include <fstream>
-using namespace std;
+#include "wall.h"
+#include "falseWall.h"
+#include "path.h"
 
-int Maze::is_in_maze(const int x, const int y) const {
-    if (x < 0 || x >= rows || y < 0 || y >= cols) return 0;
-    return 1;
+bool Maze::is_in_maze(const int x, const int y) const {
+    if (x < 0 || x >= width*tiles::getsize().x || y < 0 || y >= height*tiles::getsize().y) return false;
+    return true;
 }
-Maze::Maze() : exit{9,9} {
-    rows = 5;
-    cols = 10;
-    player = new Player;
+
+Maze::Maze(const unsigned int width, const unsigned int height, const sf::Vector2u exit):width(width), height(height){
+    this->exit.x = exit.x;
+    this->exit.y = exit.y;
 }
-Maze::Maze(const int rows, const int cols, const int x, const int y): exit{x,y}{
-    this->rows = rows;
-    this->cols = cols;
-    player = new Player;
-    exit.x = x;
-    exit.y = y;
+void Maze::loadtiles(const int* tilesData) {
+    for (unsigned int i = 0; i < width; i++)
+        for (unsigned int j = 0; j < height; j++) {
+            sf::Vector2u tile_size = tiles::getsize();
+            const int tileNumber = tilesData[i + j * width];
+            constexpr int wallNumber = 2;
+            constexpr int falseWallNumber = 0;
+            constexpr int pathNumber = 1;
+            switch (tileNumber) {
+                case wallNumber:
+                    Tiles.push_back(new wall(i*tile_size.x, j*tile_size.y));
+                    break;
+                case pathNumber:
+                    Tiles.push_back(new path(i*tile_size.x, j*tile_size.y));
+                    break;
+                case falseWallNumber:
+                    Tiles.push_back(new falseWall(i*tile_size.x, j*tile_size.y));
+                    break;
+                default:
+                    break;
+            }
+        }
 }
+void Maze::drawMaze(sf::RenderWindow& window) const {
+    for (const auto tile : Tiles) {
+        tile->drawTile(window);
+    }
+}
+bool Maze::can_player_move(Player &player) const {
+    for (const auto tile : Tiles){
+        if (tile->detect_colision(player) == true)
+        return true;
+    }
+    return false;
+}
+Maze::~Maze() {
+    for (const auto* i : Tiles)
+        delete i;
+    Tiles.clear();
+}
+
+
+/*
 Maze::Maze(const Maze& other) : exit{other.exit.x,other.exit.y} {
     rows = other.rows;
     cols = other.cols;
@@ -33,150 +70,8 @@ Maze::Maze(const Maze& other) : exit{other.exit.x,other.exit.y} {
     for (auto i : other.enemies)
         enemies.push_back(i);
 }
-Maze::~Maze() {
-    delete player;
-    enemies.clear();
-}
-
-void Maze::create_maze() {
-    ifstream fin("Maze.txt");
-    fin >> rows >> cols;
-    fin >> exit.x >> exit.y;
-    for (int i = 0; i < rows; i++) {
-        maze.push_back("");
-        for (int j = 0; j < cols; j++) {
-            char c;
-            fin.get(c);
-            if (c == ' ')
-                fin.get(c);
-            if (c != '\n')
-                maze[i].push_back(c);
-            else j--;  // sare penste endl
-        }
-    }
-    fin.close();
-}
-
-void Maze::replace_player(const int x, const int y) {
-    if (is_in_maze(x, y) == 0)
-        cout<<"Not in maze"<<endl;
-    else{
-        if (maze[x][y] == ' ') {
-            int pos_x = player->get_position_x();
-            int pos_y = player->get_position_y();
-            if (is_in_maze(pos_x, pos_y))
-                maze[pos_x][pos_y] = ' ';
-            player->set_position(x,y);
-            maze[x][y] = 'P';
-        }
-    }
-}
-int Maze::Move_Player(const int direction) {
-    for(int i = 0 ; i < player->get_speed(); i++) {
-        const int pos_x = player->get_position_x();
-        const int pos_y = player->get_position_y();
-        switch (direction) { //verificam daca se poate mutarea
-            case 1:
-                if (is_in_maze(pos_x-1, pos_y) == 0) return 0;
-                if (maze[pos_x-1][pos_y] != ' ' && maze[pos_x-1][pos_y] != 'E') return 0;
-                break;
-            case 2:
-                if (is_in_maze(pos_x, pos_y+1) == 0) return 0;
-                if (maze[pos_x][pos_y+1] != ' ' && maze[pos_x][pos_y+1] != 'E') return 0;
-                break;
-            case 3:
-                if (is_in_maze(pos_x+1, pos_y) == 0) return 0;
-                if (maze[pos_x+1][pos_y] != ' ' && maze[pos_x+1][pos_y] != 'E') return 0;
-                break;
-            case 4:
-                if (is_in_maze(pos_x,pos_y-1) == 0) return 0;
-                if (maze[pos_x][pos_y-1] != ' ' && maze[pos_x][pos_y-1] != 'E') return 0;
-                break;
-            default:
-                cout<<"Select direction in range 1-4"<<endl;
-                return 0;
-        }
-        player->Move(direction);
-        int pos_x_new = player->get_position_x();
-        int pos_y_new = player->get_position_y();
-        if (maze[pos_x_new][pos_y_new] == 'E') { // Inamicul ii ia o viata player-ului, iar acesta se intoarce inapoi
-            i = player->get_speed();
-            player->life_update();
-            player->set_position(pos_x, pos_y);
-            if (player->get_lifes() == 0) {
-                player->die();
-            }
-        }
-        else { // ' '
-            maze[pos_x_new][pos_y_new] = 'P';
-            maze[pos_x][pos_y] = ' ';
-        }
-    }
-    return 1;
-}
-void Maze::Player_Bomb() {
-    Bomb b = player->Drop_Bomb();
-    int pos_x = b.get_position_x();
-    int pos_y = b.get_position_y();
-    int range = b.get_radius();
-    for (int i = 1; i <= range; i++) { // Nord
-        int new_x = pos_x - i;
-        int new_y = pos_y;
-        if (is_in_maze(new_x, new_y) && (maze[new_x][new_y] == 'o' || maze[new_x][new_y] == 'E')) {
-            if (maze[new_x][new_y] == 'E') destroy_enemy(new_x, new_y);
-            maze[new_x][new_y] = ' ';
-        }
-    }
-    for (int i = 1; i <= range; i++) { // Est
-        int new_x = pos_x;
-        int new_y = pos_y + i;
-        if (is_in_maze(new_x, new_y) && (maze[new_x][new_y] == 'o' || maze[new_x][new_y] == 'E')) {
-            if (maze[new_x][new_y] == 'E') destroy_enemy(new_x, new_y);
-            maze[new_x][new_y] = ' ';
-        }
-    }
-    for (int i = 1; i <= range; i++) { // Sud
-        int new_x = pos_x + i;
-        int new_y = pos_y;
-        if (is_in_maze(new_x, new_y) && (maze[new_x][new_y] == 'o' || maze[new_x][new_y] == 'E')) {
-            if (maze[new_x][new_y] == 'E') destroy_enemy(new_x, new_y);
-            maze[new_x][new_y] = ' ';
-        }
-    }
-    for (int i = 1; i <= range; i++) { // Vest
-        int new_x = pos_x;
-        int new_y = pos_y - i;
-        if (is_in_maze(new_x, new_y) && (maze[new_x][new_y] == 'o' || maze[new_x][new_y] == 'E')) {
-            if (maze[new_x][new_y] == 'E') destroy_enemy(new_x, new_y);
-            maze[new_x][new_y] = ' ';
-        }
-    }
-}
-void Maze::place_enemy(const int x, const int y){
-    if (x < 0 || x >= rows || y < 0 || y >= cols)
-        cout<<"Not in maze"<<endl;
-    else {
-        if (maze[x][y] == ' ') {
-            Enemies enemy(x,y);
-            enemies.push_back(enemy);
-            maze[x][y] = 'E';
-        }
-        else cout<<"Enemy can not be placed";
-    }
-}
-void Maze::destroy_enemy(int x, int y) {
-    if (maze[x][y] == 'E') {
-        maze[x][y] = ' ';
-        for(int i = 0; i < static_cast<int>(enemies.size()); i++) {
-            if (enemies[i].get_position_x() == x && enemies[i].get_position_y() == y) {
-                enemies[i].kill();
-                enemies.erase(enemies.begin() + i);
-                cout<<"Delete enemy from position ("<<x<<", "<<y<<")"<<endl;
-            }
-        }
-    }
-    else cout<<"There is no enemy at position ("<<x<<", "<<y<<")"<<endl;
-}
+*/
+/*
 Maze& Maze::operator=(const Maze& other) {
     if (this != &other) {
         rows = other.rows;
@@ -223,3 +118,4 @@ int Maze::checkGame() const{ //return 0 daca s-a terminat jocul
     }
     return 1;
 }
+*/
