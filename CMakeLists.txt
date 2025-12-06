@@ -23,17 +23,18 @@ include(cmake/CopyHelper.cmake)
 
 # external dependencies with FetchContent
 include(FetchContent)
+set(FETCHCONTENT_QUIET OFF)
+set(FETCHCONTENT_UPDATES_DISCONNECTED ON)
 FetchContent_Declare(SFML
         GIT_REPOSITORY https://github.com/SFML/SFML.git
         GIT_TAG 3.0.2
-#        GIT_SHALLOW ON
-#        EXCLUDE_FROM_ALL
-#        SYSTEM
+        GIT_SHALLOW ON
+        EXCLUDE_FROM_ALL
+        SYSTEM
 )
 FetchContent_MakeAvailable(SFML)
 
-# set(FETCHCONTENT_QUIET OFF)
-# set(FETCHCONTENT_UPDATES_DISCONNECTED ON)
+
 #
 # NOTE: Also update env vars used for caching in
 #         - .github/actions/configure-cmake/action.yml
@@ -52,6 +53,11 @@ FetchContent_MakeAvailable(SFML)
 # external dependencies with find_package
 
 # find_package(Threads REQUIRED)
+find_package(Threads REQUIRED)
+if(APPLE)
+elseif(UNIX)
+    find_package(X11)
+endif()
 
 ###############################################################################
 
@@ -93,6 +99,11 @@ set_compiler_flags(RUN_SANITIZERS TRUE TARGET_NAMES ${MAIN_EXECUTABLE_NAME})
 
 target_compile_features(${MAIN_EXECUTABLE_NAME} PRIVATE cxx_std_17)
 target_link_libraries(${MAIN_EXECUTABLE_NAME} PRIVATE SFML::Graphics)
+
+if(APPLE)
+elseif(UNIX)
+    target_link_libraries(${MAIN_EXECUTABLE_NAME} PRIVATE X11)
+endif()
 
 ###############################################################################
 
