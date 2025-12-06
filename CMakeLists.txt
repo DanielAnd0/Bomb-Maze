@@ -30,7 +30,7 @@ set(SFML_WARNINGS_AS_ERRORS OFF)
 FetchContent_Declare(SFML
         GIT_REPOSITORY https://github.com/SFML/SFML.git
         GIT_TAG 3.0.2
-        GIT_SHALLOW ON
+        GIT_SHALLOW 1
 #        EXCLUDE_FROM_ALL
 #        SYSTEM
 )
@@ -102,7 +102,7 @@ set_compiler_flags(RUN_SANITIZERS TRUE TARGET_NAMES ${MAIN_EXECUTABLE_NAME})
 target_include_directories(${MAIN_EXECUTABLE_NAME} SYSTEM PRIVATE ${SFML_SOURCE_DIR}/include)
 target_link_directories(${MAIN_EXECUTABLE_NAME} PRIVATE ${SFML_BINARY_DIR}/lib)
 target_compile_features(${MAIN_EXECUTABLE_NAME} PRIVATE cxx_std_17)
-target_link_libraries(${MAIN_EXECUTABLE_NAME} PRIVATE SFML::Graphics)
+target_link_libraries(${MAIN_EXECUTABLE_NAME} PRIVATE SFML::Graphics SFML::Window SFML::System Threads::Threads)
 
 if(APPLE)
 elseif(UNIX)
