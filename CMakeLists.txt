@@ -27,8 +27,9 @@ FetchContent_Declare(SFML
         GIT_REPOSITORY https://github.com/SFML/SFML.git
         GIT_TAG 3.0.2
         GIT_SHALLOW ON
-        EXCLUDE_FROM_ALL
-        SYSTEM)
+#        EXCLUDE_FROM_ALL
+#        SYSTEM
+)
 FetchContent_MakeAvailable(SFML)
 
 # set(FETCHCONTENT_QUIET OFF)
@@ -90,7 +91,7 @@ set_compiler_flags(RUN_SANITIZERS TRUE TARGET_NAMES ${MAIN_EXECUTABLE_NAME})
 # target_link_directories(${MAIN_EXECUTABLE_NAME} PRIVATE ${<SomeLib>_BINARY_DIR}/lib)
 # target_link_libraries(${MAIN_EXECUTABLE_NAME} <SomeLib>)
 
-#target_compile_features(${MAIN_EXECUTABLE_NAME} PRIVATE cxx_std_17)
+target_compile_features(${MAIN_EXECUTABLE_NAME} PRIVATE cxx_std_17)
 target_link_libraries(${MAIN_EXECUTABLE_NAME} PRIVATE SFML::Graphics)
 
 ###############################################################################
