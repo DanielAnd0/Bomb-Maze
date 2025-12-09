@@ -36,9 +36,7 @@ Player::Player(const float position_x, const float position_y) : playerSprite(pl
     //playerSprite.setOrigin({0, static_cast<float>(player_size_y)});
 }
 
-int Player::get_lifes() const{
-    return lifes;
-}
+
 int Player::get_direction()const {
     return last_direction;
 }
