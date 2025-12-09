@@ -6,8 +6,7 @@
 #define OOP_BOMB_H
 
 
-#include "SFML/Graphics.hpp"
-
+#include <SFML/Graphics.hpp>
 
 class Bomb{
     float radius;

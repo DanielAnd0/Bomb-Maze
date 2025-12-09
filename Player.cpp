@@ -143,7 +143,7 @@ void Player::Update(const float deltaTime){
             moveStart = false;
         }
         if (constexpr float switch_time = 0.1666f; stateTime >= switch_time) {
-            if (stateTime >= switch_time)stateTime -= switch_time;
+            stateTime -= switch_time;
             next_move_state[dir]++;
             if (next_move_state[dir] >= total_Sprite_States_per_move)
                 next_move_state[dir] = 0;

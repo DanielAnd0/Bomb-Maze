@@ -25,7 +25,6 @@ public:
      Player();
      Player(float position_x, float position_y);
      static void loadTexture();
-     [[nodiscard]]int get_lifes() const;
      [[nodiscard]]bool get_life_status() const;
      [[nodiscard]]float get_speed() const;
      [[nodiscard]]Bomb& get_bomb();
