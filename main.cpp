@@ -7,7 +7,6 @@
 
 int main() {
     try {
-        float deltaTime = 0.0f;
         Enemies::loadTexture();
         tiles::loadTexture();
         Player::loadTexture();
@@ -16,7 +15,7 @@ int main() {
         constexpr unsigned int screenWidth = 15;
         constexpr unsigned int screenHeight = 10;
 
-        const auto exit = sf::Vector2f(14.5f*tiles::getsize().x, 3.5f*tiles::getsize().y);
+        const auto exit = sf::Vector2f(14.5f*static_cast<float>(tiles::getsize().x), 3.5f*static_cast<float>(tiles::getsize().y));
 
         Maze maze(screenWidth, screenHeight, exit);
         sf::RenderWindow window(sf::VideoMode({screenWidth*tiles::getsize().x, screenHeight*tiles::getsize().y}), "Game");
@@ -39,11 +38,11 @@ int main() {
 
         };
         maze.load(loadMaze.data());
-        maze.add_enemy(10.f*tiles::getsize().x, 3.f*static_cast<float>(tiles::getsize().y));
+        maze.add_enemy(10.f*static_cast<float>(tiles::getsize().x), 3.f*static_cast<float>(tiles::getsize().y));
 
         sf::Clock clock;
         while (window.isOpen() && !player.getHitBox().contains(maze.get_exit()) && player.get_life_status()){
-            deltaTime = clock.restart().asSeconds();
+            float deltaTime = clock.restart().asSeconds();
             while (const std::optional event = window.pollEvent()) {
                 if (event->is<sf::Event::Closed>())
                     window.close();
