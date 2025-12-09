@@ -6,6 +6,7 @@
 #include "Maze.h"
 
 int main() {
+    float deltaTime = 0.0f;
     try {
         Enemies::loadTexture();
         tiles::loadTexture();
@@ -41,8 +42,6 @@ int main() {
         maze.add_enemy(10.f*tiles::getsize().x, 3.f*static_cast<float>(tiles::getsize().y));
 
         sf::Clock clock;
-        float deltaTime = 0.0f;
-
         while (window.isOpen() && !player.getHitBox().contains(maze.get_exit()) && player.get_life_status()){
             deltaTime = clock.restart().asSeconds();
             while (const std::optional event = window.pollEvent()) {
