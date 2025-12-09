@@ -10,6 +10,7 @@
 #include "wall.h"
 #include "falseWall.h"
 #include "path.h"
+#include "Exit.h"
 
 bool Maze::is_in_maze(const float x, const float y) const {
     if (x < 0 || x >= width*tiles::getsize().x || y < 0 || y >= height*tiles::getsize().y) return false;
@@ -29,10 +30,13 @@ void Maze::load(const int* data) {
         for (unsigned int j = 0; j < height; j++) {
                 const sf::Vector2u tile_size = tiles::getsize();
                 const int Number = data[i + j * width];
-                const float positionX = static_cast<float>(tile_size.x * i);
-                const float positionY = static_cast<float>(tile_size.y * j);
+                const auto positionX = static_cast<float>(tile_size.x * i);
+                const auto positionY = static_cast<float>(tile_size.y * j);
                 if (!is_in_maze(positionX, positionY)) {throw NotInMaze(positionX, positionY);}
                 switch (Number) {
+                    case 3:
+                        Tiles.push_back(new Exit(i*tile_size.x, j*tile_size.y));
+                        break;
                     case 2:
                         Tiles.push_back(new wall(i*tile_size.x, j*tile_size.y));
                         break;
@@ -106,8 +110,10 @@ void Maze::Update(Player& player, const float deltaTime) const {
     }
 
     //Enemies move on maze
+    int remaining = 0;
     for (const auto enemy : enemies) {
         if (enemy->get_life_status()){
+            remaining++;
             //check for deployed bombs
             int direction = enemy->get_direction();
             sf::FloatRect hitBox = enemy->getHitBox();
@@ -123,6 +129,14 @@ void Maze::Update(Player& player, const float deltaTime) const {
             if (playerHitBox.findIntersection(hitBox)) {
                 player.life_update();
                 player.restart();
+            }
+        }
+    }
+    //We unlock the exit if there are no enemies
+    if (remaining == 0) {
+        for (auto tile : Tiles) {
+            if (const auto eXiT = dynamic_cast<Exit*>(tile)) {
+                eXiT->unlock();
             }
         }
     }

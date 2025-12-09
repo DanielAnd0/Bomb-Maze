@@ -83,6 +83,8 @@ add_executable(${MAIN_EXECUTABLE_NAME}
         path.cpp
         path.h
         Exceptions.h
+        Exit.cpp
+        Exit.h
 
 )
 
