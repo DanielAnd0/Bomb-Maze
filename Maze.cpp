@@ -29,20 +29,17 @@ void Maze::load(const int* data) {
         for (unsigned int j = 0; j < height; j++) {
                 const sf::Vector2u tile_size = tiles::getsize();
                 const int Number = data[i + j * width];
-                constexpr int wallNumber = 2;
-                constexpr int falseWallNumber = 0;
-                constexpr int pathNumber = 1;
                 const float positionX = static_cast<float>(tile_size.x * i);
                 const float positionY = static_cast<float>(tile_size.y * j);
                 if (!is_in_maze(positionX, positionY)) {throw NotInMaze(positionX, positionY);}
                 switch (Number) {
-                    case wallNumber:
+                    case 2:
                         Tiles.push_back(new wall(i*tile_size.x, j*tile_size.y));
                         break;
-                    case pathNumber:
+                    case 1:
                         Tiles.push_back(new path(i*tile_size.x, j*tile_size.y));
                         break;
-                    case falseWallNumber:
+                    case 0:
                         Tiles.push_back(new falseWall(i*tile_size.x, j*tile_size.y));
                         break;
                     default:

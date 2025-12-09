@@ -11,8 +11,7 @@ void Player::loadTexture() {
 int Player::player_size_x = 18;
 int Player::player_size_y = 24;
 
-Player::Player() : playerSprite(playerTexture){
-    startPosition = {0,0};
+Player::Player() : startPosition({0,0}), playerSprite(playerTexture){
     lifes = 3;
     speed = 1;
     life_status = true;
@@ -23,8 +22,7 @@ Player::Player() : playerSprite(playerTexture){
     //playerSprite.setOrigin({0, static_cast<float>(player_size_y)});
 }
 
-Player::Player(const float position_x, const float position_y) : playerSprite(playerTexture) {
-    startPosition = {position_x, position_y};
+Player::Player(const float position_x, const float position_y) : startPosition({position_x, position_y}),playerSprite(playerTexture) {
     lifes = 3;
     speed = 1;
     life_status = true;
@@ -54,21 +52,18 @@ void Player::restart() {
     playerSprite.setPosition(startPosition);
 }
 void Player::change_position(const int direction, const float deltaX) {
-    constexpr int up = 0;
-    constexpr int down = 1;
-    constexpr int left = 2;
-    constexpr int right = 3;
+
     switch (direction) {
-        case up:
+        case 0:
             this->playerSprite.move({0,-deltaX});
             break;
-        case down:
+        case 1:
             this->playerSprite.move({0,+deltaX});
             break;
-        case left:
+        case 2:
             this->playerSprite.move({-deltaX, 0});
             break;
-        case right:
+        case 3:
             this->playerSprite.move({deltaX, 0});
             break;
         default:

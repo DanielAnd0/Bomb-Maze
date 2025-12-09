@@ -46,21 +46,17 @@ sf::FloatRect Enemies::getHitBox() const {
 }
 
 void Enemies::change_position(const int direction, float deltaX) {
-    constexpr int up = 0;
-    constexpr int down = 1;
-    constexpr int left = 2;
-    constexpr int right = 3;
     switch (direction) {
-        case up:
+        case 0:
             this->sprite.move({0,-deltaX});
             break;
-        case down:
+        case 1:
             this->sprite.move({0,+deltaX});
             break;
-        case left:
+        case 2:
             this->sprite.move({-deltaX, 0});
             break;
-        case right:
+        case 3:
             this->sprite.move({deltaX, 0});
             break;
         default:
