@@ -12,11 +12,15 @@ void falseWall::destroy() {
     destroyed = true;
     sprite.setTextureRect(sf::IntRect({static_cast<int>(size_x),0}, {static_cast<int>(size_x),static_cast<int>(size_y)}));
 }
-bool falseWall::detect_colision(Player &player) {
-    sf::FloatRect player_bounds = player.getBounds();
+
+bool falseWall::detect_colision(sf::FloatRect& hitBox) {
     sf::FloatRect tile_bounds = sprite.getGlobalBounds();
-    if (tile_bounds.findIntersection(player_bounds) && destroyed==false) {
+    if (tile_bounds.findIntersection(hitBox) && destroyed==false) {
         return true;
     }
     return false;
+}
+
+tiles* falseWall::clone() {
+    return new falseWall(*this);
 }

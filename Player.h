@@ -6,34 +6,38 @@
 #include <SFML/Graphics.hpp>
 
 class Player{
+     sf::Vector2f startPosition;
      int lifes;
-     int speed;
+     float speed;
      bool life_status; // true - alive, false = dead
      static sf::Texture playerTexture;
+     Bomb playerBomb;
      static int player_size_x;
      static int player_size_y;
      sf::Sprite playerSprite;
+     sf::FloatRect playerHitBox;
      static constexpr int total_Sprite_States_per_move = 4;
      int next_move_state[4] ={ 0,0,0,0 };
-     bool can_player_move = true;
-     int last_direction = -1;
-
+     float stateTime = 0.0f;
+     int last_direction = 0;
+     bool moveStart=true;
 public:
      Player();
-     Player(int position_x, int position_y);
+     Player(float position_x, float position_y);
+     static void loadTexture();
      [[nodiscard]]int get_lifes() const;
      [[nodiscard]]bool get_life_status() const;
-     [[nodiscard]]int get_speed() const;
+     [[nodiscard]]float get_speed() const;
+     [[nodiscard]]Bomb& get_bomb();
+     [[nodiscard]]int get_direction() const;
      void change_position(int direction, float deltaX);
-     void doNotMove();
-     void set_speed(int Speed);
-     void Move();
-     sf::FloatRect getBounds() const;
+     void set_speed(float Speed);
+     void Update(float deltaTime);
+     void restart();
+     sf::FloatRect getHitBox() const;
      void draw(sf::RenderWindow& window) const;
      void life_update();
-     [[nodiscard]]Bomb Drop_Bomb() const;
-     void die();
-     friend ostream& operator<<(ostream& os, const Player& player);
+    // friend ostream& operator<<(ostream& os, const Player& player);
 };
 
 #endif //OOP_PLAYER_H

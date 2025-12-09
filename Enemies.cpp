@@ -1,40 +1,101 @@
-#include <iostream>
+
 #include "Enemies.h"
+#include "Player.h"
+#include "Exceptions.h"
 
-using namespace std;
+sf::Texture Enemies::texture;
+void Enemies::loadTexture() {
+    bool is_loaded = texture.loadFromFile("Sprites/Enemy.png");
+    if (!is_loaded)throw FileLoadFail();
+}
 
-Enemies::Enemies() {
-    position_x = -1;
-    position_y = -1;
+float Enemies::speed = 50;
+Enemies::Enemies():sprite(texture) {
+    sprite.setTextureRect(sf::IntRect({0,0},{14,16}));
+    sprite.setPosition({0,0});
     life_status = true;
+    EnemyHitBox=sf::FloatRect({2.f,2.f},{13.f, 13.f});
+
 }
-Enemies::Enemies(int position_x, int position_y) {
-    this->position_x = position_x;
-    this->position_y = position_y;
+Enemies::Enemies(const float position_x, const float position_y):sprite(texture){
+    sprite.setTextureRect(sf::IntRect({0,0},{14,16}));
+    sprite.setPosition({static_cast<float>(position_x),static_cast<float>(position_y)});
     life_status = true;
+    EnemyHitBox=sf::FloatRect({position_x+2.f,position_y+2.f},{13.f, 13.f});
 }
-int Enemies::get_position_x() const {
-    return position_x;
-}
-int Enemies::get_position_y() const {
-    return position_y;
-}
-void Enemies::set_position(int x, int y) {
-    position_x = x;
-    position_y = y;
-}
+
 bool Enemies::get_life_status() const {
     return life_status;
 }
+int Enemies::get_direction() const {
+    return last_direction;
+}
+float Enemies::get_speed() {
+    return speed;
+}
 void Enemies::kill() {
+    sprite.setTextureRect(sf::IntRect({53,0},{16,16}));
     life_status = false;
-    position_x = -1;
-    position_y = -1;
 }
-ostream& operator<<(ostream& os, const Enemies& enemy) {
-    os << "Inamic la pozitia ("<<enemy.position_x<<", "<<enemy.position_y<<")\n";
-    return os;
+void Enemies::set_speed(const float new_speed) {
+    speed = new_speed;
+
 }
+sf::FloatRect Enemies::getHitBox() const {
+    return EnemyHitBox;
+}
+
+void Enemies::change_position(const int direction, float deltaX) {
+    constexpr int up = 0;
+    constexpr int down = 1;
+    constexpr int left = 2;
+    constexpr int right = 3;
+    switch (direction) {
+        case up:
+            this->sprite.move({0,-deltaX});
+            break;
+        case down:
+            this->sprite.move({0,+deltaX});
+            break;
+        case left:
+            this->sprite.move({-deltaX, 0});
+            break;
+        case right:
+            this->sprite.move({deltaX, 0});
+            break;
+        default:
+            break;
+    }
+    EnemyHitBox.position.x = sprite.getPosition().x + 2.f;
+    EnemyHitBox.position.y = sprite.getPosition().y + 2.f;
+}
+void Enemies::Update(float deltaTime, int direction) {
+    last_direction = direction;
+    change_position(direction, speed*deltaTime);
+
+    //Animation
+    stateTime += deltaTime;
+    if (constexpr float switch_time = 0.1666f; stateTime >= switch_time) {
+        constexpr int states[6] = {0, 18, 36, 51, 33, 14};
+        stateTime -= switch_time;
+        int size_x = 16;
+        if (move_state > 2)size_x = -16;
+        if (move_state == 5)size_x = -14;
+        sprite.setTextureRect(sf::IntRect({states[move_state], 0}, {size_x, 16}));
+        move_state++;
+        if (move_state >= 6) move_state = 0;
+    }
+    last_direction = direction;
+
+}
+void Enemies::draw(sf::RenderWindow &window) const {
+    window.draw(sprite);
+}
+
+// ostream& operator<<(ostream& os, const Enemies& enemy) {
+//     os << "Inamic la pozitia ("<<enemy.position_x<<", "<<enemy.position_y<<")\n";
+//     return os;
+// }
 
 
 

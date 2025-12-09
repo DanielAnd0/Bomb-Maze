@@ -6,7 +6,6 @@
 #define OOP_TILES_H
 
 #include<SFML/Graphics.hpp>
-#include "Player.h"
 
 class tiles{
     static sf::Texture texture;
@@ -18,9 +17,12 @@ protected:
 public:
     static sf::Vector2u getsize();
     tiles(unsigned int position_x, unsigned int position_y);
+    static void loadTexture();
     virtual ~tiles() = default;
     void drawTile(sf::RenderWindow& window) const;
-    virtual bool detect_colision(Player& player) = 0;
+    virtual bool detect_colision(sf::FloatRect& hitBox) = 0;
+    virtual tiles* clone() = 0;
+    sf::Vector2f get_position() const;
 };
 
 #endif //OOP_TILES_H

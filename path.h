@@ -10,7 +10,8 @@
 class path: public tiles{
 public:
     path(unsigned int position_x, unsigned int position_y);
-    bool detect_colision(Player &player) override;
+    bool detect_colision(sf::FloatRect &hitBox) override;
+    tiles* clone() override;
 };
 
 #endif //OOP_PATH_H

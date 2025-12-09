@@ -12,7 +12,8 @@ class falseWall : public tiles {
 public:
     falseWall(unsigned int position_x, int unsigned position_y);
     void destroy();
-    bool detect_colision(Player &player) override;
+    bool detect_colision(sf::FloatRect& hitBox) override;
+    tiles* clone() override;
 };
 
 #endif //OOP_FALSEWALL_H

@@ -82,6 +82,7 @@ add_executable(${MAIN_EXECUTABLE_NAME}
         falseWall.h
         path.cpp
         path.h
+        Exceptions.h
 )
 
 # NOTE: Add all defined targets (e.g. executables, libraries, etc. )

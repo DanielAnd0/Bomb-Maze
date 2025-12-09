@@ -4,118 +4,150 @@
 
 #include<iostream>
 #include "Maze.h"
+#include <cmath>
+
+#include "Exceptions.h"
 #include "wall.h"
 #include "falseWall.h"
 #include "path.h"
 
-bool Maze::is_in_maze(const int x, const int y) const {
+bool Maze::is_in_maze(const float x, const float y) const {
     if (x < 0 || x >= width*tiles::getsize().x || y < 0 || y >= height*tiles::getsize().y) return false;
     return true;
 }
 
-Maze::Maze(const unsigned int width, const unsigned int height, const sf::Vector2u exit):width(width), height(height){
+Maze::Maze(const unsigned int width, const unsigned int height, const sf::Vector2f exit):width(width), height(height){
+    if (!is_in_maze(exit.x, exit.y)) {throw NotInMaze(exit.x, exit.y);}
     this->exit.x = exit.x;
     this->exit.y = exit.y;
 }
-void Maze::loadtiles(const int* tilesData) {
+sf::Vector2f Maze::get_exit() const{
+    return exit;
+}
+void Maze::load(const int* data) {
     for (unsigned int i = 0; i < width; i++)
         for (unsigned int j = 0; j < height; j++) {
-            sf::Vector2u tile_size = tiles::getsize();
-            const int tileNumber = tilesData[i + j * width];
-            constexpr int wallNumber = 2;
-            constexpr int falseWallNumber = 0;
-            constexpr int pathNumber = 1;
-            switch (tileNumber) {
-                case wallNumber:
-                    Tiles.push_back(new wall(i*tile_size.x, j*tile_size.y));
-                    break;
-                case pathNumber:
-                    Tiles.push_back(new path(i*tile_size.x, j*tile_size.y));
-                    break;
-                case falseWallNumber:
-                    Tiles.push_back(new falseWall(i*tile_size.x, j*tile_size.y));
-                    break;
-                default:
-                    break;
+                const sf::Vector2u tile_size = tiles::getsize();
+                const int Number = data[i + j * width];
+                constexpr int wallNumber = 2;
+                constexpr int falseWallNumber = 0;
+                constexpr int pathNumber = 1;
+                const float positionX = static_cast<float>(tile_size.x * i);
+                const float positionY = static_cast<float>(tile_size.y * j);
+                if (!is_in_maze(positionX, positionY)) {throw NotInMaze(positionX, positionY);}
+                switch (Number) {
+                    case wallNumber:
+                        Tiles.push_back(new wall(i*tile_size.x, j*tile_size.y));
+                        break;
+                    case pathNumber:
+                        Tiles.push_back(new path(i*tile_size.x, j*tile_size.y));
+                        break;
+                    case falseWallNumber:
+                        Tiles.push_back(new falseWall(i*tile_size.x, j*tile_size.y));
+                        break;
+                    default:
+                        throw InvalidTileNumber(Number);
+                }
             }
-        }
 }
+void Maze::add_enemy(const float position_x,const float position_y) {
+        enemies.push_back(new Enemies(position_x, position_y));
+        if (!is_in_maze(position_x, position_y))throw NotInMaze(position_x, position_y);
+}
+
 void Maze::drawMaze(sf::RenderWindow& window) const {
     for (const auto tile : Tiles) {
         tile->drawTile(window);
     }
+    for (const auto enemy : enemies) {
+        if (enemy->get_life_status())
+            enemy->draw(window);
+    }
 }
-bool Maze::can_player_move(Player &player) const {
+bool Maze::check_for_colisions(sf::FloatRect& hitBox) const {
     for (const auto tile : Tiles){
-        if (tile->detect_colision(player) == true)
-        return true;
+            if (tile->detect_colision(hitBox) == true)
+                return true;
     }
     return false;
 }
+void Maze::Update(Player& player, const float deltaTime) const {
+    //Check if bomb is exploded
+    const sf::Vector2 bomb_explosion = player.get_bomb().getPosition();
+    if (!is_in_maze(bomb_explosion.x, bomb_explosion.y) && player.get_bomb().isDeployed())throw NotInMaze(bomb_explosion.x, bomb_explosion.y);
+    if (player.get_bomb().isExploded()){
+        for (const auto tile : Tiles) {
+            //bomb destroy falseWalls
+            if (const auto is_false_wall = dynamic_cast<falseWall*>(tile)) {
+                sf::Vector2f center_of_tile = is_false_wall->get_position();
+                center_of_tile.x += static_cast<float>(tiles::getsize().x) / 2.f;
+                center_of_tile.y += static_cast<float>(tiles::getsize().y) / 2.f;
+                float distance = std::sqrt((center_of_tile.x-bomb_explosion.x)*(center_of_tile.x-bomb_explosion.x) + (center_of_tile.y-bomb_explosion.y)*(center_of_tile.y-bomb_explosion.y));
+                float radius = player.get_bomb().get_radius();
+                if (distance <= radius)
+                    is_false_wall->destroy();
+            }
+        }
+        //Bomb destroys enemy
+        for (const auto enemy : enemies) {
+            const float center_x = enemy->getHitBox().getCenter().x;
+            const float center_y = enemy->getHitBox().getCenter().y;
+            float distance = std::sqrt((center_x-bomb_explosion.x)*(center_x-bomb_explosion.x) + (center_y-bomb_explosion.y)*(center_y-bomb_explosion.y));
+            float radius = player.get_bomb().get_radius();
+            if (distance <= radius)
+                enemy->kill();
+        }
+        //Bomb destroys player
+        const float center_x = player.getHitBox().getCenter().x;
+        const float center_y = player.getHitBox().getCenter().y;
+        float distance = std::sqrt((center_x-bomb_explosion.x)*(center_x-bomb_explosion.x) + (center_y-bomb_explosion.y)*(center_y-bomb_explosion.y));
+        float radius = player.get_bomb().get_radius();
+        if (distance <= radius) {
+            player.life_update();
+            player.restart();
+        }
+    }
+
+    //Enemies move on maze
+    for (const auto enemy : enemies) {
+        if (enemy->get_life_status()){
+            //check for deployed bombs
+            int direction = enemy->get_direction();
+            sf::FloatRect hitBox = enemy->getHitBox();
+            if (check_for_colisions(hitBox) || (player.get_bomb().isDeployed() && hitBox.contains(player.get_bomb().getPosition()))) {
+                enemy->change_position(enemy->get_direction(), (-enemy->get_speed()*deltaTime));
+                srand(time(nullptr));
+                direction = rand() % 4;
+            }
+
+            enemy->Update(deltaTime, direction);
+            //check for colisions with player
+            sf::FloatRect playerHitBox = player.getHitBox();
+            if (playerHitBox.findIntersection(hitBox)) {
+                player.life_update();
+                player.restart();
+            }
+        }
+    }
+}
+Maze::Maze(const Maze &other) : width(other.width), height(other.height) {
+    this->Tiles = other.Tiles;
+    this->enemies = other.enemies;
+    this->exit = other.exit;
+}
+
+Maze& Maze::operator=(const Maze &other) {
+    this->Tiles = other.Tiles;
+    this->enemies = other.enemies;
+    this->exit = other.exit;
+    return *this;
+}
+
 Maze::~Maze() {
     for (const auto* i : Tiles)
         delete i;
     Tiles.clear();
+    for (const auto* i : enemies)
+        delete i;
+    enemies.clear();
 }
-
-
-/*
-Maze::Maze(const Maze& other) : exit{other.exit.x,other.exit.y} {
-    rows = other.rows;
-    cols = other.cols;
-    if (other.player)
-        player = new Player(*other.player);
-    else
-        player = nullptr;
-    for (auto i : other.enemies)
-        enemies.push_back(i);
-}
-*/
-/*
-Maze& Maze::operator=(const Maze& other) {
-    if (this != &other) {
-        rows = other.rows;
-        cols = other.cols;
-        exit.x = other.exit.x;
-        exit.y = other.exit.y;
-        player = other.player;
-        for (auto i : other.enemies) {
-            enemies.clear();
-            enemies.push_back(i);
-        }
-    }
-    return *this;
-}
-ostream& operator<<(ostream& os, const Maze& maze) {
-    for (int i = 0; i < maze.rows; i++) {
-        for (int j = 0; j < maze.cols; j++) {
-            os<<maze.maze[i][j]<<" ";
-        }
-        os<<endl;
-    }
-    os << *maze.player;
-    if (maze.enemies.size() != 0) {
-        for (const auto i : maze.enemies) {
-            os << i;
-        }
-    }
-    return os;
-}
-int Maze::checkGame() const{ //return 0 daca s-a terminat jocul
-    int pos_x = player->get_position_x();
-    int pos_y = player->get_position_y();
-    if (pos_x == exit.x && pos_y == exit.y && enemies.size() == 0) {
-        cout<<"----------"<<endl;
-        cout<<"GAME WON!"<<endl;
-        cout<<"----------"<<endl;
-        return 0;
-    }
-    if (player->get_life_status()==false) {
-        cout<<"----------"<<endl;
-        cout<<"GAME OVER!"<<endl;
-        cout<<"----------"<<endl;
-        return 0;
-    }
-    return 1;
-}
-*/

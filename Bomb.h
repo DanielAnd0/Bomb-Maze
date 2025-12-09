@@ -5,20 +5,31 @@
 #ifndef OOP_BOMB_H
 #define OOP_BOMB_H
 
-#include<iostream>
-using namespace std;
 
-class Bomb {
-    int radius;
-    int position_x;
-    int position_y;
+#include "SFML/Graphics.hpp"
+
+
+class Bomb{
+    float radius;
+    static sf::Texture texture;
+    sf::Sprite sprite;
+    const float duration = 2;
+    float timer = 0;
+    bool deployed = false;
+    bool exploded = false;
+    sf::Vector2f deployed_position = {-1, -1};
 public:
     Bomb();
-    Bomb(int radius, int position_x, int position_y);
-    [[nodiscard]]int get_radius() const;
-    [[nodiscard]]int get_position_x() const;
-    [[nodiscard]]int get_position_y() const;
-    friend ostream& operator<<(ostream& os, const Bomb& bomb);
+    static void loadTexture();
+    bool get_status() const;
+    float get_radius() const;
+    void deploy(float position_x, float position_y);
+    sf::Vector2f getPosition() const;
+    bool isDeployed() const;
+    bool isExploded() const;
+    void Update(float deltaTime);
+    void draw(sf::RenderWindow &window) const;
+   // friend ostream& operator<<(ostream& os, const Bomb& bomb);
 };
 
 #endif //OOP_BOMB_H

@@ -5,22 +5,28 @@
 #ifndef OOP_ENEMIES_H
 #define OOP_ENEMIES_H
 
-#include <iostream>
-using namespace std;
-
+#include <SFML/Graphics.hpp>
 class Enemies {
-    int position_x;
-    int position_y;
-    bool life_status;
+    static sf::Texture texture;
+    sf::Sprite sprite;
+    static float speed;
+    bool life_status = true;
+    int  last_direction = 0;
+    sf::FloatRect EnemyHitBox;
+    float stateTime = 0;
+    int move_state=0;
 public:
     Enemies();
-    Enemies(int position_x, int position_y);
-    [[nodiscard]]int get_position_x() const;
-    [[nodiscard]]int get_position_y() const;
-    void set_position(int x, int y);
+    Enemies(float position_x, float position_y);
+    static void loadTexture();
     [[nodiscard]]bool get_life_status() const;
+    [[nodiscard]]int get_direction() const;
+    static float get_speed();
     void kill();
-    friend ostream& operator<<(ostream& os, const Enemies& enemy);
-
+    static void set_speed(float new_speed);
+    void change_position(int direction, float deltaX);
+    void Update(float deltaTime, int direction);
+    sf::FloatRect getHitBox() const;
+    void draw(sf::RenderWindow& window) const;
 };
 #endif //OOP_ENEMIES_H
