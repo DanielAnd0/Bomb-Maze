@@ -5,6 +5,7 @@
 #ifndef OOP_EXCEPTIONS_H
 #define OOP_EXCEPTIONS_H
 #include <iostream>
+#include <exception>
 
 class Exceptions : public std::exception {
     std::string message;
