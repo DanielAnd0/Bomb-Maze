@@ -7,11 +7,13 @@
 
 #include <iostream>
 #include <exception>
+#include <string>
 
 class Exceptions : public std::exception {
     std::string message;
 public:
     explicit Exceptions(const std::string& msg):message(msg){}
+    ~Exceptions() override = default;
     [[nodiscard]] const char* what() const noexcept override {
         return message.c_str();
     }
