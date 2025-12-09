@@ -4,6 +4,7 @@
 
 #ifndef OOP_EXCEPTIONS_H
 #define OOP_EXCEPTIONS_H
+
 #include <iostream>
 #include <exception>
 
@@ -11,7 +12,7 @@ class Exceptions : public std::exception {
     std::string message;
 public:
     explicit Exceptions(const std::string& msg):message(msg){}
-    const char* what() const noexcept override {
+    [[nodiscard]] const char* what() const noexcept override {
         return message.c_str();
     }
 };
