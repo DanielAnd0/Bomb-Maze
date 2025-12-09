@@ -6,8 +6,8 @@
 #include "Maze.h"
 
 int main() {
-    float deltaTime = 0.0f;
     try {
+        float deltaTime = 0.0f;
         Enemies::loadTexture();
         tiles::loadTexture();
         Player::loadTexture();
