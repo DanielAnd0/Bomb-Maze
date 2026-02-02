@@ -1,6 +1,4 @@
-//
-// Created by Daniel on 29.01.2026.
-//
+
 
 #include "../headers/Subject.h"
 #include "../headers/observer.h"

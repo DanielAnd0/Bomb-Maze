@@ -1,6 +1,4 @@
-//
-// Created by Daniel on 29.01.2026.
-//
+
 
 #ifndef OOP_OBSERVER_H
 #define OOP_OBSERVER_H
