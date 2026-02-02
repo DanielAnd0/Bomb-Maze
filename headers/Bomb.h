@@ -7,8 +7,9 @@
 
 
 #include <SFML/Graphics.hpp>
+#include "Subject.h"
 
-class Bomb{
+class Bomb : public Subject{
     float radius;
     static sf::Texture texture;
     sf::Sprite sprite;
@@ -26,6 +27,7 @@ public:
     sf::Vector2f getPosition() const;
     bool isDeployed() const;
     bool isExploded() const;
+    sf::FloatRect getBounds() const;
     void Update(float deltaTime);
     void draw(sf::RenderWindow &window) const;
    // friend ostream& operator<<(ostream& os, const Bomb& bomb);

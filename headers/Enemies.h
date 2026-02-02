@@ -6,7 +6,8 @@
 #define OOP_ENEMIES_H
 
 #include <SFML/Graphics.hpp>
-class Enemies {
+
+class Enemies{
     static sf::Texture texture;
     sf::Sprite sprite;
     static float speed;
@@ -24,8 +25,9 @@ public:
     static float get_speed();
     void kill();
     static void set_speed(float new_speed);
+    void set_direction(int new_direction);
     void change_position(int direction, float deltaX);
-    void Update(float deltaTime, int direction);
+    void Update(float deltaTime, int next_direction);
     sf::FloatRect getHitBox() const;
     void draw(sf::RenderWindow& window) const;
 };

@@ -66,25 +66,30 @@ endif()
 # NOTE: update executable name in .github/workflows/cmake.yml:25 when changing name here
 add_executable(${MAIN_EXECUTABLE_NAME}
     main.cpp
-        Maze.h
-        Player.h
-        Player.cpp
-        Bomb.h
-        Bomb.cpp
-        Enemies.h
-        Enemies.cpp
-        Maze.cpp
-        tiles.cpp
-        tiles.h
-        wall.cpp
-        wall.h
-        falseWall.cpp
-        falseWall.h
-        path.cpp
-        path.h
-        Exceptions.h
-        Exit.cpp
-        Exit.h
+        headers/Maze.h
+        headers/Player.h
+        src/Player.cpp
+        headers/Bomb.h
+        src/Bomb.cpp
+        headers/Enemies.h
+        src/Enemies.cpp
+        src/Maze.cpp
+        src/tiles.cpp
+        headers/tiles.h
+        src/wall.cpp
+        headers/wall.h
+        src/falseWall.cpp
+        headers/falseWall.h
+        src/path.cpp
+        headers/path.h
+        headers/Exceptions.h
+        src/Exit.cpp
+        headers/Exit.h
+        headers/observer.h
+        src/Subject.cpp
+        headers/Subject.h
+        headers/TileFactory.h
+        headers/CollisionManager.h
 
 )
 
@@ -123,6 +128,5 @@ endif()
 install(DIRECTORY Sprites DESTINATION ${DESTINATION_DIR})
 
 copy_files(FILES tastatura.txt COPY_TO_DESTINATION TARGET_NAME ${MAIN_EXECUTABLE_NAME})
-# copy_files(FILES tastatura.txt config.json DIRECTORY images sounds COPY_TO_DESTINATION TARGET_NAME ${MAIN_EXECUTABLE_NAME})
 # copy_files(DIRECTORY images sounds COPY_TO_DESTINATION TARGET_NAME ${MAIN_EXECUTABLE_NAME})
 copy_files(DIRECTORY Sprites  COPY_TO_DESTINATION TARGET_NAME ${MAIN_EXECUTABLE_NAME})

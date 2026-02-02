@@ -10,22 +10,26 @@
 #include "tiles.h"
 #include "Enemies.h"
 #include "Player.h"
-class Maze{
+#include "observer.h"
+
+
+
+class Maze : public Observer{
     const unsigned int width, height;
     std::vector<tiles*>Tiles;
     std::vector<Enemies*>enemies;
     sf::Vector2f exit;
 public:
     [[nodiscard]]bool is_in_maze(float x, float y)const;
-    Maze(unsigned int width, unsigned int height, sf::Vector2f exit);
+    Maze(unsigned int width, unsigned int height);
     void load(const int* data);
-    sf::Vector2f get_exit() const;
+    [[nodiscard]] sf::Vector2f get_exit() const;
     void add_enemy(float position_x, float position_y);
     void drawMaze(sf::RenderWindow& window) const;
-    bool check_for_colisions(sf::FloatRect& hitBox) const;
+    void Update(Subject* theChangedSubject) override;
     void Update(Player& player, float deltaTime) const;
      Maze(const Maze& other);
-    ~Maze();
+    ~Maze() override;
      Maze& operator=(const Maze& other);
 };
 

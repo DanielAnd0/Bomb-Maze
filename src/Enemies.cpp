@@ -1,7 +1,7 @@
 
-#include "Enemies.h"
-#include "Player.h"
-#include "Exceptions.h"
+#include "../headers/Enemies.h"
+#include "../headers/Player.h"
+#include "../headers/Exceptions.h"
 
 sf::Texture Enemies::texture;
 void Enemies::loadTexture() {
@@ -41,6 +41,10 @@ void Enemies::set_speed(const float new_speed) {
     speed = new_speed;
 
 }
+void Enemies::set_direction(const int new_direction) {
+    last_direction = new_direction;
+}
+
 sf::FloatRect Enemies::getHitBox() const {
     return EnemyHitBox;
 }
@@ -65,10 +69,10 @@ void Enemies::change_position(const int direction, float deltaX) {
     EnemyHitBox.position.x = sprite.getPosition().x + 2.f;
     EnemyHitBox.position.y = sprite.getPosition().y + 2.f;
 }
-void Enemies::Update(float deltaTime, int direction) {
-    last_direction = direction;
-    change_position(direction, speed*deltaTime);
+void Enemies::Update(float deltaTime, const int next_direction) {
 
+    last_direction = next_direction;
+    change_position(last_direction, speed*deltaTime);
     //Animation
     stateTime += deltaTime;
     if (constexpr float switch_time = 0.1666f; stateTime >= switch_time) {
@@ -81,9 +85,8 @@ void Enemies::Update(float deltaTime, int direction) {
         move_state++;
         if (move_state >= 6) move_state = 0;
     }
-    last_direction = direction;
-
 }
+
 void Enemies::draw(sf::RenderWindow &window) const {
     window.draw(sprite);
 }

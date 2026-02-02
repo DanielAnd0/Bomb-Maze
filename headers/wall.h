@@ -10,7 +10,7 @@
 class wall: public tiles {
 public:
     wall(unsigned int position_x, unsigned int position_y);
-    bool detect_colision(sf::FloatRect& hitBox) override;
+    bool detect_colision(sf::FloatRect hitBox) override;
     tiles* clone() override;
 };
 

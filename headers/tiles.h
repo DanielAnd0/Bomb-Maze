@@ -7,6 +7,8 @@
 
 #include<SFML/Graphics.hpp>
 
+#include "CollisionManager.h"
+
 class tiles{
     static sf::Texture texture;
     unsigned int position_x, position_y;
@@ -19,8 +21,9 @@ public:
     tiles(unsigned int position_x, unsigned int position_y);
     static void loadTexture();
     virtual ~tiles() = default;
+    sf::FloatRect getBounds() const;
     void drawTile(sf::RenderWindow& window) const;
-    virtual bool detect_colision(sf::FloatRect& hitBox) = 0;
+    virtual bool detect_colision(sf::FloatRect hitBox) = 0;
     virtual tiles* clone() = 0;
     sf::Vector2f get_position() const;
 };

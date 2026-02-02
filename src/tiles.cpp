@@ -2,15 +2,19 @@
 // Created by Daniel on 04.12.2025.
 //
 
-#include "tiles.h"
-#include "Exceptions.h"
+#include "../headers/tiles.h"
+#include "../headers/Exceptions.h"
 
 sf::Texture tiles::texture;
+
 void tiles::loadTexture() {
         bool is_loaded = texture.loadFromFile("Sprites/Tiles.png");
         if (!is_loaded)throw FileLoadFail();
 }
 
+sf::FloatRect tiles::getBounds() const {
+    return sprite.getGlobalBounds();
+}
 unsigned int tiles::size_x = 16, tiles::size_y = 16;
 sf::Vector2u tiles::getsize() {
     return {size_x, size_y};

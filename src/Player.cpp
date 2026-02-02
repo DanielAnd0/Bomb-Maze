@@ -1,7 +1,12 @@
-#include "Player.h"
-#include "Exceptions.h"
-
+#include "../headers/Player.h"
+#include "../headers/Exceptions.h"
+#include "../headers/Bomb.h"
+#include <cmath>
+#include "../headers/CollisionManager.h"
 sf::Texture Player::playerTexture;
+
+
+
 
 void Player::loadTexture() {
     bool is_loaded = playerTexture.loadFromFile("Sprites/Player.png");
@@ -44,10 +49,11 @@ bool Player::get_life_status() const{
 float Player::get_speed() const {
     return speed;
 }
-Bomb &Player::get_bomb() {
-    Bomb& bomb = playerBomb;
-    return bomb;
+
+bool Player::can_deploy() const {
+    return can_deploy_bomb;
 }
+
 void Player::restart() {
     playerSprite.setPosition(startPosition);
 }
@@ -77,15 +83,37 @@ void Player::change_position(const int direction, const float deltaX) {
 void Player::set_speed(const float Speed){
     this->speed = Speed;
 }
+void Player::set_deploy_status(bool status) {
+    can_deploy_bomb = status;
+}
+
+void Player::Update(Subject* theChangedSubject) {
+    Bomb* explodedBomb = dynamic_cast<Bomb*>(theChangedSubject);
+    if (explodedBomb != nullptr) {
+        if (explodedBomb->isExploded()){
+        //Bomb destroys player
+            can_deploy_bomb = true;
+            const sf::Vector2 bomb_explosion = explodedBomb->getPosition();
+            const float center_x = playerHitBox.getCenter().x;
+            const float center_y = playerHitBox.getCenter().y;
+            float distance = std::sqrt((center_x-bomb_explosion.x)*(center_x-bomb_explosion.x) + (center_y-bomb_explosion.y)*(center_y-bomb_explosion.y));
+            float radius = explodedBomb->get_radius();
+            if (distance <= radius) {
+                life_update();
+                restart();
+            }
+    }
+        //detect colision
+        if (explodedBomb->isDeployed()) {
+            sf::FloatRect bounds = explodedBomb->getBounds();
+            CollisionManager<Player> colision(this, bounds);
+            if (colision.checkCollision()) colision.solve();
+    }
+    }
+}
+
 void Player::Update(const float deltaTime){
 
-    //FOR BOMB
-    playerBomb.Update(deltaTime);
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space) && playerBomb.get_status()==false) {
-        float center_x = playerSprite.getPosition().x + static_cast<float>(player_size_x)/2.0f;
-        float center_y = playerSprite.getPosition().y + static_cast<float>(player_size_y)/2.0f;
-        playerBomb.deploy(center_x, center_y);
-    }
     //FOR ANIMATION
     int constexpr states[4][total_Sprite_States_per_move] = {
         {37, 56, 56, 75},
@@ -162,8 +190,13 @@ sf::FloatRect Player::getHitBox() const {
     return playerHitBox;
 }
 
+sf::Vector2f Player::getPlayerPosition() const {
+    float center_x = playerSprite.getPosition().x + static_cast<float>(player_size_x)/2.0f;
+    float center_y = playerSprite.getPosition().y + static_cast<float>(player_size_y)/2.0f;
+    return {center_x, center_y};
+}
+
 void Player::draw(sf::RenderWindow& window) const {
-    if (playerBomb.get_status() == true) playerBomb.draw(window);
     window.draw(playerSprite);
 }
 void Player::life_update() {

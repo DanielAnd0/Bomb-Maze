@@ -10,7 +10,7 @@ class Exit : public tiles{
     bool locked = true;
 public:
     Exit(unsigned int position_x, unsigned int position_y);
-    bool detect_colision(sf::FloatRect &hitBox) override;
+    bool detect_colision(sf::FloatRect hitBox) override;
     void unlock();
     Exit* clone() override;
 };

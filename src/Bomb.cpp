@@ -1,7 +1,7 @@
-#include "Bomb.h"
+#include "../headers/Bomb.h"
 
-#include "Exceptions.h"
-#include "Player.h"
+#include "../headers/Exceptions.h"
+#include "../headers/Player.h"
 
 sf::Texture Bomb::texture;
 
@@ -38,6 +38,9 @@ bool Bomb::isDeployed() const {
 bool Bomb::isExploded() const {
     return exploded;
 }
+sf::FloatRect Bomb::getBounds() const {
+    return sprite.getGlobalBounds();
+}
 
 void Bomb::Update(const float deltaTime) {
     exploded = false;
@@ -46,9 +49,11 @@ void Bomb::Update(const float deltaTime) {
         if (timer >= duration) { //BOMB EXPLODES IN 3 SECONDS
             deployed = false;
             exploded = true;
+            Notify();
             timer = 0;
             sprite.setTextureRect(sf::IntRect({0, 0}, {16, 16}));
         }
+        if (timer >= 0.2) Notify();
         if (timer >= duration/3)
             sprite.setTextureRect(sf::IntRect({18, 0}, {14, 16}));
         if (timer >= 2*duration/3)
