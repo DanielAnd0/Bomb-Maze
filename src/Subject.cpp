@@ -7,7 +7,7 @@
 
 void Subject::Attach (Observer* o) {_observers.push_back(o); }
 void Subject::Detach (Observer* o) {
-    for (auto i = _observers.begin(); i < _observers.end(); ++i) {if (*i == o) _observers.erase(i); }
+    for (auto i = _observers.begin(); i < _observers.end(); ++i) {if (*i == o) _observers.erase(i); break;}
 }
 void Subject::Notify(){
     for (auto & _observer : _observers) {
