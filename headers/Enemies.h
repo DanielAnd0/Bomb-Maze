@@ -22,7 +22,6 @@ public:
     static void loadTexture();
     [[nodiscard]]bool get_life_status() const;
     [[nodiscard]]int get_direction() const;
-    static float get_speed();
     void kill();
     static void set_speed(float new_speed);
     void set_direction(int new_direction);

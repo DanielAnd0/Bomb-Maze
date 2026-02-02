@@ -120,8 +120,8 @@ void Maze::Update(Player& player, const float deltaTime) const {
         if (enemy->get_life_status()) {
             remaining++;
             //enemies kill player
-            CollisionManager<Enemies> collision(enemy, player.getHitBox());
-            if (collision.checkCollision()) {
+            CollisionManager<Enemies> colision(enemy, player.getHitBox());
+            if (colision.checkCollision()) {
                     player.life_update();
                     player.restart();
                 }

@@ -30,9 +30,7 @@ bool Enemies::get_life_status() const {
 int Enemies::get_direction() const {
     return last_direction;
 }
-float Enemies::get_speed() {
-    return speed;
-}
+
 void Enemies::kill() {
     sprite.setTextureRect(sf::IntRect({53,0},{16,16}));
     life_status = false;

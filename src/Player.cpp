@@ -85,7 +85,7 @@ void Player::set_deploy_status(bool status) {
 }
 
 void Player::Update(Subject* theChangedSubject) {
-    Bomb* explodedBomb = dynamic_cast<Bomb*>(theChangedSubject);
+    const auto explodedBomb = dynamic_cast<Bomb*>(theChangedSubject);
     if (explodedBomb != nullptr) {
         if (explodedBomb->isExploded()){
         //Bomb destroys player

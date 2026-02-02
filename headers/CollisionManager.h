@@ -2,7 +2,7 @@
 #ifndef OOP_COLLISIONMANAGER_H
 #define OOP_COLLISIONMANAGER_H
 
-#include "SFML/Graphics.hpp"
+#include <SFML/Graphics.hpp>
 
 template <class T>
 class CollisionManager {
