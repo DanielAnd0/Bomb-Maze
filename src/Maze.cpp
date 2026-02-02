@@ -61,7 +61,7 @@ void Maze::drawMaze(sf::RenderWindow& window) const {
 
 void Maze::Update(Subject *theChangedSubject) {
 
-    Bomb* explodedBomb = dynamic_cast<Bomb*>(theChangedSubject);
+    const Bomb* explodedBomb = dynamic_cast<Bomb*>(theChangedSubject);
     if (explodedBomb != nullptr) {
         const sf::Vector2 bomb_explosion = explodedBomb->getPosition();
         if (!is_in_maze(bomb_explosion.x, bomb_explosion.y) && explodedBomb->isDeployed())throw NotInMaze(bomb_explosion.x, bomb_explosion.y);
