@@ -21,7 +21,6 @@ class Bomb : public Subject{
 public:
     Bomb();
     static void loadTexture();
-    bool get_status() const;
     float get_radius() const;
     void deploy(float position_x, float position_y);
     sf::Vector2f getPosition() const;

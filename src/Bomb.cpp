@@ -17,9 +17,7 @@ Bomb::Bomb():sprite(texture) {
     sprite.setTextureRect(sf::IntRect({0, 0}, {16, 16}));
     sprite.setOrigin(sf::Vector2f(8, 8));
 }
-bool Bomb::get_status() const {
-    return deployed;
-}
+
 float Bomb::get_radius() const {
     return radius;
 }
