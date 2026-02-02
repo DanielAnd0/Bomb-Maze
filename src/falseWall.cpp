@@ -12,9 +12,7 @@ void falseWall::destroy() {
     destroyed = true;
     sprite.setTextureRect(sf::IntRect({static_cast<int>(size_x),0}, {static_cast<int>(size_x),static_cast<int>(size_y)}));
 }
-bool falseWall::get_status() const {
-    return destroyed;
-}
+
 
 
 bool falseWall::detect_colision(sf::FloatRect hitBox) {

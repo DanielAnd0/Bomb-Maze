@@ -46,9 +46,6 @@ int Player::get_direction()const {
 bool Player::get_life_status() const{
     return life_status;
 }
-float Player::get_speed() const {
-    return speed;
-}
 
 bool Player::can_deploy() const {
     return can_deploy_bomb;

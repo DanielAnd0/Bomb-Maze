@@ -27,7 +27,6 @@ public:
      Player(float position_x, float position_y);
      static void loadTexture();
      [[nodiscard]]bool get_life_status() const;
-     [[nodiscard]]float get_speed() const;
      [[nodiscard]]bool can_deploy() const;
      [[nodiscard]]int get_direction() const;
      void change_position(int direction, float deltaX);
